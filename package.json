@@ -1,6 +1,6 @@
 {
   "name": "@mephisto5558/i18n",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "description": "I18n package using flattened keys",
   "main": "index.js",
   "scripts": {
