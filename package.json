@@ -1,7 +1,7 @@
 {
   "name": "@mephisto5558/i18n",
   "version": "0.0.0",
-  "description": "I18n package",
+  "description": "I18n package using flattened keys",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\""
