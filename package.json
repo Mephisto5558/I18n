@@ -1,0 +1,23 @@
+{
+  "name": "@mephisto5558/i18n",
+  "version": "0.0.0",
+  "description": "I18n package",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\""
+  },
+  "keywords": ["internationalization", "i18n"],
+  "author": "Mephisto5558",
+  "license": "MIT",
+  "engines": {
+    "node": ">=16.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Mephisto5558/I18n.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Mephisto5558/I18n/issues"
+  },
+  "homepage": "https://github.com/Mephisto5558/I18n#readme"
+}
