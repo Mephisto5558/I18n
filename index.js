@@ -52,6 +52,8 @@ module.exports = class I18nProvider {
 
   /**@param {string}key @param {string|object}replacements @returns {string}the message*/
   __({ locale = this.config.defaultLocale, errorNotFound = this.config.errorNotFound, undefinedNotFound = this.config.undefinedNotFound, backupPath } = {}, key, replacements) {
+    if (!key) throw new Error(`A key string must be provided! Got ${key}.`);
+
     let message = this.localeData[locale]?.[key] ?? (backupPath && this.localeData[locale]?.[`${backupPath}.${key}`]);
     if (!message) {
       if (!undefinedNotFound) log.setType('I18n').warn(`Missing "${locale}" localization for ${key}` + (backupPath ? ` (${backupPath}.${key})!` : '!')).setType();
