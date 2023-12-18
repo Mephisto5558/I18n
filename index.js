@@ -40,7 +40,7 @@ module.exports = class I18nProvider {
   async loadAllLocales() {
     this.availableLocales = new Map(await readdir(this.config.localesPath).then(e => e.reduce(async (acc, e) => {
       if (!(await readdir(`${this.config.localesPath}/${e}`)).includes('.ignore')) (await acc).push([path.basename(e, '.json'), path.resolve(this.config.localesPath, e)]);
-      return acc;
+      return await acc;
     }, Promise.resolve([]))));
     this.localeData = {};
 
