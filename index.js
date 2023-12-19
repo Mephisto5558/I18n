@@ -11,7 +11,7 @@ module.exports = class I18nProvider {
   constructor({
     localesPath = './locales', defaultLocale = 'en', separator = '.', notFoundMessage = '',
     errorNotFound = false, undefinedNotFound = false
-  }) {
+  } = {}) {
     this.config = { localesPath, defaultLocale, separator, errorNotFound, undefinedNotFound, notFoundMessage };
 
     this.loadAllLocales();
@@ -40,7 +40,7 @@ module.exports = class I18nProvider {
   async loadAllLocales() {
     this.availableLocales = new Map(await readdir(this.config.localesPath).then(e => e.reduce(async (acc, e) => {
       if (!(await readdir(`${this.config.localesPath}/${e}`)).includes('.ignore')) (await acc).push([path.basename(e, '.json'), path.resolve(this.config.localesPath, e)]);
-      return await acc;
+      return acc;
     }, Promise.resolve([]))));
     this.localeData = {};
 
@@ -75,14 +75,15 @@ module.exports = class I18nProvider {
     return message;
   }
 
-  /**@param {object}object @param {string}objectPath @returns {object}flatted object*/
-  flatten = (object, objectPath) => Object.keys(object).reduce((acc, key) => {
-    const newObjectPath = [objectPath, key].filter(Boolean).join(this.config.separator);
-    return Object.assign(Object.assign({}, acc), ({}).toString() == object?.[key]
-      ? this.flatten(object[key], newObjectPath)
-      : { [newObjectPath]: object[key] }
-    );
-  }, {});
+  /**@param {object}object @param {string}objectPath @returns {object}The flattened object*/
+  flatten(object, objectPath = '') {
+    return Object.keys(object).reduce((acc, key) => {
+      const newObjectPath = [objectPath, key].filter(Boolean).join(this.config.separator);
+      if (Object.prototype.toString.call(object[key]) === '[object Object]')
+        return { ...acc, ...this.flatten(object[key], newObjectPath) };
+      return { ...acc, [newObjectPath]: object[key] };
+    }, {});
+  }
 
   /**@param {boolean}checkEqual @returns {object}list of entries that are missing or equal with default data*/
   findMissing(checkEqual) {
