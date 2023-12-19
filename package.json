@@ -3,12 +3,19 @@
   "version": "1.1.1",
   "description": "I18n package using flattened keys",
   "main": "index.js",
+  "types": "index.d.ts",
+  "files": [
+    "index.js",
+    "index.d.ts"
+  ],
   "scripts": {
     "test": "echo \"Error: no test specified\""
   },
   "keywords": [
     "internationalization",
-    "i18n"
+    "localization",
+    "i18n",
+    "l10n"
   ],
   "author": "Mephisto5558",
   "license": "MIT",
