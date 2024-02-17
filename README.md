@@ -5,7 +5,7 @@
 [![wakatime](https://wakatime.com/badge/github/Mephisto5558/I18n.svg)](https://wakatime.com/badge/github/Mephisto5558/I18n)<br>
 [![npm version](https://badge.fury.io/js/@mephisto5558%2Fi18n.svg)](https://www.npmjs.com/package/@mephisto5558/i18n)
 [![npm downloads](https://img.shields.io/npm/dm/%40mephisto5558%2Fi18n)](https://www.npmjs.com/package/@mephisto5558/i18n)<br>
-[![CodeQL](https://github.com/Mephisto5558/Bot-Website/actions/workflows/codeql-analysis.yml/badge.svg?branch=main)](https://github.com/Mephisto5558/Bot-Website/actions/workflows/codeql-analysis.yml)
+[![CodeQL](https://github.com/Mephisto5558/Bot-Website/actions/workflows/codeql.yml/badge.svg)](https://github.com/Mephisto5558/Bot-Website/actions/workflows/codeql.yml)
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=Mephisto5558_I18n&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=Mephisto5558_I18n)<br>
 [![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=Mephisto5558_I18n&metric=security_rating)](https://sonarcloud.io/summary/new_code?id=Mephisto5558_I18n)
 [![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=Mephisto5558_I18n&metric=sqale_rating)](https://sonarcloud.io/summary/new_code?id=Mephisto5558_I18n)
