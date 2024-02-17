@@ -10,9 +10,9 @@ declare class I18nProvider {
     errorNotFound: boolean; undefinedNotFound: boolean; notFoundMessage: string;
   };
 
-  /**<locale key, file path>*/
+  /** <locale key, file path>*/
   availableLocales: Map<string, string>;
-  localeData: object;
+  localeData: Record<string, string | string[]>;
 
   loadLocale(locale: string): Promise<void>;
   loadAllLocales(): Promise<void>;
@@ -20,7 +20,7 @@ declare class I18nProvider {
   /** @returns the message*/
   __(
     config: { locale?: string; errorNotFound?: boolean; undefinedNotFound?: boolean; backupPath?: string },
-    key: string, replacements?: string|object
+    key: string, replacements?: string | Record<string, string>
   ): string;
 
   /** @returns flatted object*/
