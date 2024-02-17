@@ -2,10 +2,10 @@ const
   { readdir, readFile } = require('fs/promises'),
   path = require('path');
 
-global.log ??= {
+const log = global.log ?? {
   debug: (...data) => { console.debug(...data); return log; },
   setType: () => log
-}; //if the file is running separately
+}; // if the file is running separately
 
 module.exports = class I18nProvider {
   constructor({
@@ -17,6 +17,7 @@ module.exports = class I18nProvider {
     this.loadAllLocales();
   }
 
+  /** @type {import('.')['loadLocale']} */
   async loadLocale(locale) {
     if (!locale) return;
 
@@ -37,6 +38,7 @@ module.exports = class I18nProvider {
     this.localeData[locale] = this.flatten(data);
   }
 
+  /** @type {import('.')['loadAllLocales']} */
   async loadAllLocales() {
     this.availableLocales = new Map(await readdir(this.config.localesPath).then(e => e.reduce(async (acc, e) => {
       if (!(await readdir(`${this.config.localesPath}/${e}`)).includes('.ignore')) (await acc).push([path.basename(e, '.json'), path.resolve(this.config.localesPath, e)]);
@@ -50,7 +52,8 @@ module.exports = class I18nProvider {
     if (!this.defaultLocaleData) throw new Error(`There are no language files for the default locale (${this.config.defaultLocale}) in the supplied locales path!`);
   }
 
-  /**@param {string}key @param {string|object}replacements @returns {string}the message*/
+  /** @type {import('.')['__']} */
+  /* eslint-disable-next-line default-param-last */
   __({ locale = this.config.defaultLocale, errorNotFound = this.config.errorNotFound, undefinedNotFound = this.config.undefinedNotFound, backupPath } = {}, key, replacements) {
     if (!key) throw new Error(`A key string must be provided! Got ${key}.`);
 
@@ -71,11 +74,12 @@ module.exports = class I18nProvider {
     if (!replacements?.toString()) return message;
     if (typeof replacements != 'object') return message.replace(/{\w+}/g, replacements.toString());
 
+    /* eslint-disable-next-line no-shadow */
     for (const [key, value] of Object.entries(replacements)) message = message.replaceAll(`{${key}}`, value?.toString());
     return message;
   }
 
-  /**@param {object}object @param {string}objectPath @returns {object}The flattened object*/
+  /** @type {import('.')['flatten']} */
   flatten(object, objectPath = '') {
     return Object.keys(object).reduce((acc, key) => {
       const newObjectPath = [objectPath, key].filter(Boolean).join(this.config.separator);
@@ -85,15 +89,17 @@ module.exports = class I18nProvider {
     }, {});
   }
 
-  /**@param {boolean}checkEqual @returns {object}list of entries that are missing or equal with default data*/
+  /** @type {import('.')['findMissing']} */
   findMissing(checkEqual) {
     const defaultKeys = Object.keys(this.defaultLocaleData);
     const missing = {};
 
-    for (const [locale] of this.availableLocales) missing[locale] = defaultKeys.filter(k => {
-      if (checkEqual && this.config.defaultLocale != locale && this.localeData[locale][k] == this.defaultLocaleData[k]) return true;
-      return !this.localeData[locale][k];
-    });
+    for (const [locale] of this.availableLocales) {
+      missing[locale] = defaultKeys.filter(k => {
+        if (checkEqual && this.config.defaultLocale != locale && this.localeData[locale][k] == this.defaultLocaleData[k]) return true;
+        return !this.localeData[locale][k];
+      });
+    }
     return Object.fromEntries(Object.entries(missing).filter(([, e]) => e.length));
   }
 };
