@@ -1,18 +1,13 @@
 const
   { readdir, readFile } = require('fs/promises'),
   path = require('path');
-
-const log = global.log ?? {
-  debug: (...data) => { console.debug(...data); return log; },
-  setType: () => log
-}; // if the file is running separately
-
 module.exports = class I18nProvider {
   constructor({
     localesPath = './locales', defaultLocale = 'en', separator = '.', notFoundMessage = '',
-    errorNotFound = false, undefinedNotFound = false
+    errorNotFound = false, undefinedNotFound = false, warnLoggingFunction = console.warn
   } = {}) {
     this.config = { localesPath, defaultLocale, separator, errorNotFound, undefinedNotFound, notFoundMessage };
+    this.logWarn = warnLoggingFunction;
 
     this.loadAllLocales();
   }
@@ -59,7 +54,7 @@ module.exports = class I18nProvider {
 
     let message = this.localeData[locale]?.[key] ?? (backupPath && this.localeData[locale]?.[`${backupPath}.${key}`]);
     if (!message) {
-      if (!undefinedNotFound) log.setType('I18n').warn(`Missing "${locale}" localization for ${key}` + (backupPath ? ` (${backupPath}.${key})!` : '!')).setType();
+      if (!undefinedNotFound) this.logWarn(`Missing "${locale}" localization for ${key}` + (backupPath ? ` (${backupPath}.${key})!` : '!'));
       if (this.config.defaultLocale != locale) message = this.defaultLocaleData[key] ?? (backupPath && this.defaultLocaleData[`${backupPath}.${key}`]);
     }
 
@@ -67,7 +62,7 @@ module.exports = class I18nProvider {
     if (!message) {
       if (errorNotFound) throw new Error(`Key not found: "${key}"` + (backupPath ? ` (${backupPath}.${key})` : ''));
       if (undefinedNotFound) return undefined;
-      log.setType('I18n').warn(`Missing default ("${this.config.defaultLocale}") localization for ${key}` + (backupPath ? ` (${backupPath}.${key})!` : '!')).setType();
+      this.logWarn(`Missing default ("${this.config.defaultLocale}") localization for ${key}` + (backupPath ? ` (${backupPath}.${key})!` : '!'));
       return this.config.notFoundMessage?.replaceAll('{key}', key) ?? key;
     }
 
