@@ -1,10 +1,10 @@
 export = I18nProvider;
 declare class I18nProvider {
-  constructor(
-    localesPath?: string, defaultLocale?: string, separator?: string,
-    notFoundMessage?: string, errorNotFound?: boolean, undefinedNotFound?: boolean,
-    warnLoggingFunction?: (...msg: string) => unknown
-  );
+  constructor(options: {
+    localesPath?: string; defaultLocale?: string; separator?: string;
+    notFoundMessage?: string; errorNotFound?: boolean; undefinedNotFound?: boolean;
+    warnLoggingFunction?: (...msg: string) => unknown;
+  });
 
   config: {
     localesPath: string; defaultLocale: string; separator: string;
