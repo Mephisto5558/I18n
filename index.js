@@ -1,6 +1,6 @@
 const
-  { readdir, readFile } = require('fs/promises'),
-  path = require('path');
+  { readdir, readFile } = require('node:fs/promises'),
+  path = require('node:path');
 module.exports = class I18nProvider {
   constructor({
     localesPath = './locales', defaultLocale = 'en', separator = '.', notFoundMessage = '',
@@ -61,13 +61,13 @@ module.exports = class I18nProvider {
     if (Array.isArray(message)) message = message.random();
     if (!message) {
       if (errorNotFound) throw new Error(`Key not found: "${key}"` + (backupPath ? ` (${backupPath}.${key})` : ''));
-      if (undefinedNotFound) return undefined;
+      if (undefinedNotFound) return;
       this.logWarn(`Missing default ("${this.config.defaultLocale}") localization for ${key}` + (backupPath ? ` (${backupPath}.${key})!` : '!'));
       return this.config.notFoundMessage?.replaceAll('{key}', key) ?? key;
     }
 
     if (!replacements?.toString()) return message;
-    if (typeof replacements != 'object') return message.replace(/{\w+}/g, replacements.toString());
+    if (typeof replacements != 'object') return message.replaceAll(/{\w+}/g, replacements.toString());
 
     /* eslint-disable-next-line no-shadow */
     for (const [key, value] of Object.entries(replacements)) message = message.replaceAll(`{${key}}`, value?.toString());
