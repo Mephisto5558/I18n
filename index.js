@@ -1,7 +1,7 @@
 const
   { readdir, readFile } = require('node:fs/promises'),
   path = require('node:path');
-  
+
 module.exports = class I18nProvider {
   constructor({
     localesPath = './locales', defaultLocale = 'en', separator = '.', notFoundMessage = '',
