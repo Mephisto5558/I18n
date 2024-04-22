@@ -49,7 +49,7 @@ module.exports = class I18nProvider {
   }
 
   /** @type {import('.')['__']} */
-  /* eslint-disable-next-line default-param-last */
+  /* eslint-disable-next-line default-param-last -- The first param is intended to be bound by the end user. */
   __({ locale = this.config.defaultLocale, errorNotFound = this.config.errorNotFound, undefinedNotFound = this.config.undefinedNotFound, backupPath } = {}, key, replacements) {
     if (!key) throw new Error(`A key string must be provided! Got ${key}.`);
 
@@ -70,8 +70,7 @@ module.exports = class I18nProvider {
     if (!replacements?.toString()) return message;
     if (typeof replacements != 'object') return message.replaceAll(/{\w+}/g, replacements.toString());
 
-    /* eslint-disable-next-line no-shadow */
-    for (const [key, value] of Object.entries(replacements)) message = message.replaceAll(`{${key}}`, value?.toString());
+    for (const [replacer, replacement] of Object.entries(replacements)) message = message.replaceAll(`{${replacer}}`, replacement?.toString());
     return message;
   }
 
