@@ -1,6 +1,7 @@
 const
   { readdir, readFile } = require('node:fs/promises'),
-  path = require('node:path');
+  path = require('node:path'),
+  { randomInt } = require('node:crypto');
 
 module.exports = class I18nProvider {
   constructor({
@@ -59,7 +60,8 @@ module.exports = class I18nProvider {
       if (this.config.defaultLocale != locale) message = this.defaultLocaleData[key] ?? (backupPath && this.defaultLocaleData[`${backupPath}.${key}`]);
     }
 
-    if (Array.isArray(message)) message = message.random();
+    if (Array.isArray(message)) message = message[randomInt(message.length)];
+
     if (!message) {
       if (errorNotFound) throw new Error(`Key not found: "${key}"` + (backupPath ? ` (${backupPath}.${key})` : ''));
       if (undefinedNotFound) return;
@@ -67,11 +69,7 @@ module.exports = class I18nProvider {
       return this.config.notFoundMessage?.replaceAll('{key}', key) ?? key;
     }
 
-    if (!replacements?.toString()) return message;
-    if (typeof replacements != 'object') return message.replaceAll(/{\w+}/g, replacements.toString());
-
-    for (const [replacer, replacement] of Object.entries(replacements)) message = message.replaceAll(`{${replacer}}`, replacement?.toString());
-    return message;
+    return this.constructor.formatMessage(message, replacements);
   }
 
   /** @type {import('.')['flatten']} */
@@ -96,5 +94,13 @@ module.exports = class I18nProvider {
       });
     }
     return Object.fromEntries(Object.entries(missing).filter(([, e]) => e.length));
+  }
+
+  /** @type {(typeof import('.'))['formatMessage']} */
+  static formatMessage(message, replacements) {
+    if (!replacements?.toString()) return message;
+    if (typeof replacements != 'object') return message.replaceAll(/{\w+}/g, replacements.toString());
+
+    for (const [replacer, replacement] of Object.entries(replacements)) message = message.replaceAll(`{${replacer}}`, replacement?.toString());
   }
 };

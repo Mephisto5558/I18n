@@ -30,5 +30,7 @@ declare class I18nProvider {
   /** @returns list of entries that are missing or equal with default data*/
   findMissing(checkEqual: boolean): object;
 
+  static formatMessage(message: string, replacements?: string | Record<string, string>): typeof message;
+
   logWarn(...msg: string): unknown;
 }
