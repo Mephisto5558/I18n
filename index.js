@@ -49,9 +49,16 @@ module.exports = class I18nProvider {
     if (!this.defaultLocaleData) throw new Error(`There are no language files for the default locale (${this.config.defaultLocale}) in the supplied locales path!`);
   }
 
-  /** @type {import('.')['__']} */
+  /**
+   * Wrapper function to improve typing.
+   * @param {{ locale?: string; errorNotFound?: boolean; undefinedNotFound?: boolean; backupPath?: string }}config
+   * @param {string} key
+   * @param {string | Record<string,string>} replacements
+   * @param {boolean?} returnArray
+   * @returns {string|string[]} based on returnArray (only `string` if `false`)
+   */
   /* eslint-disable-next-line default-param-last -- The first param is intended to be bound by the end user. */
-  __({ locale = this.config.defaultLocale, errorNotFound = this.config.errorNotFound, undefinedNotFound = this.config.undefinedNotFound, backupPath } = {}, key, replacements) {
+  #__({ locale = this.config.defaultLocale, errorNotFound = this.config.errorNotFound, undefinedNotFound = this.config.undefinedNotFound, backupPath } = {}, key, replacements, returnArray) {
     if (!key) throw new Error(`A key string must be provided! Got ${key}.`);
 
     let message = this.localeData[locale]?.[key] ?? (backupPath && this.localeData[locale]?.[`${backupPath}.${key}`]);
@@ -60,7 +67,10 @@ module.exports = class I18nProvider {
       if (this.config.defaultLocale != locale) message = this.defaultLocaleData[key] ?? (backupPath && this.defaultLocaleData[`${backupPath}.${key}`]);
     }
 
-    if (Array.isArray(message)) message = message[randomInt(message.length)];
+    if (Array.isArray(message)) {
+      if (returnArray) return message.map(msg => this.constructor.formatMessage(msg, replacements));
+      message = message[randomInt(message.length)];
+    }
 
     if (!message) {
       if (errorNotFound) throw new Error(`Key not found: "${key}"` + (backupPath ? ` (${backupPath}.${key})` : ''));
@@ -71,6 +81,12 @@ module.exports = class I18nProvider {
 
     return this.constructor.formatMessage(message, replacements);
   }
+
+  /** @type {import('.')['__']} */
+  __(config, key, replacements) { return this.#__(config, key, replacements, false); }
+
+  /** @type {import('.')['array__']} */
+  array__(config, key, replacements) { return this.#__(config, key, replacements, true); }
 
   /** @type {import('.')['flatten']} */
   flatten(object, objectPath = '') {

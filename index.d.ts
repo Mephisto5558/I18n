@@ -1,3 +1,6 @@
+type i18nFuncConfig = { locale?: string; errorNotFound?: boolean; undefinedNotFound?: boolean; backupPath?: string };
+
+
 export = I18nProvider;
 declare class I18nProvider {
   constructor(options: {
@@ -19,10 +22,10 @@ declare class I18nProvider {
   loadAllLocales(): Promise<void>;
 
   /** @returns the message*/
-  __(
-    config: { locale?: string; errorNotFound?: boolean; undefinedNotFound?: boolean; backupPath?: string },
-    key: string, replacements?: string | Record<string, string>
-  ): string;
+  __(config: i18nFuncConfig, key: string, replacements?: string | Record<string, string>): string;
+
+  /** same as {@link I18nProvider.__ __} but returns the whole array instead of a random element from an array.*/
+  array__(config: i18nFuncConfig, key: string, replacements?: string | Record<string, string>): string | string[];
 
   /** @returns flatted object*/
   flatten(object: object, objectPath: string): object;
@@ -30,7 +33,7 @@ declare class I18nProvider {
   /** @returns list of entries that are missing or equal with default data*/
   findMissing(checkEqual: boolean): object;
 
-  static formatMessage(message: string, replacements?: string | Record<string, string>): typeof message;
-
   logWarn(...msg: string): unknown;
+
+  static formatMessage(message: string, replacements?: string | Record<string, string>): typeof message;
 }
