@@ -118,5 +118,7 @@ module.exports = class I18nProvider {
     if (typeof replacements != 'object') return message.replaceAll(/{\w+}/g, replacements.toString());
 
     for (const [replacer, replacement] of Object.entries(replacements)) message = message.replaceAll(`{${replacer}}`, replacement?.toString());
+
+    return message;
   }
 };
