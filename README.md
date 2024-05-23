@@ -1,7 +1,7 @@
 # I18n
 [![Activity](https://img.shields.io/github/commit-activity/m/Mephisto5558/I18n)](https://github.com/Mephisto5558/I18n/pulse)
 [![License](https://img.shields.io/github/license/Mephisto5558/I18n)](https://github.com/Mephisto5558/I18n/blob/main/LICENSE)
-[![Lines of Code](https://sonarcloud.io/api/project_badges/measure?project=Mephisto5558_I18n&metric=ncloc)](https://sonarcloud.io/summary/new_code?id=Mephisto5558_I18n)
+[![Lines of Code](https://sonarcloud.io/api/project_badges/measure?project=Mephisto5558_I18n&metric=ncloc)](https://sonarcloud.io/component_measures?metric=ncloc&id=Mephisto5558_I18n)
 [![wakatime](https://wakatime.com/badge/github/Mephisto5558/I18n.svg)](https://wakatime.com/badge/github/Mephisto5558/I18n)<br>
 [![npm version](https://badge.fury.io/js/@mephisto5558%2Fi18n.svg)](https://www.npmjs.com/package/@mephisto5558/i18n)
 [![npm downloads](https://img.shields.io/npm/dm/%40mephisto5558%2Fi18n)](https://www.npmjs.com/package/@mephisto5558/i18n)<br>
