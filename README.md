@@ -16,5 +16,6 @@
 [![Code Smells](https://sonarcloud.io/api/project_badges/measure?project=Mephisto5558_I18n&metric=code_smells)](https://sonarcloud.io/summary/new_code?id=Mephisto5558_I18n)
 [![Technical Debt](https://sonarcloud.io/api/project_badges/measure?project=Mephisto5558_I18n&metric=sqale_index)](https://sonarcloud.io/summary/new_code?id=Mephisto5558_I18n)
 
+[![Discord Server](https://discord.com/api/guilds/1011956895529041950/widget.png?style=shield)](https://discord.com/invite/yWwGTeppjR)
 
 An I18n class, using flattened keys
