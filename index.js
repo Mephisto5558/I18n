@@ -11,7 +11,7 @@ module.exports = class I18nProvider {
     this.config = { localesPath, defaultLocale, separator, errorNotFound, undefinedNotFound, notFoundMessage };
     this.logWarn = warnLoggingFunction;
 
-    this.loadAllLocales();
+    void this.loadAllLocales();
   }
 
   /** @type {import('.')['loadLocale']} */
@@ -57,7 +57,7 @@ module.exports = class I18nProvider {
    * @param {boolean?} returnArray
    * @returns {string|string[]} based on returnArray (only `string` if `false`)
    */
-  /* eslint-disable-next-line default-param-last -- The first param is intended to be bound by the end user. */
+  /* eslint-disable-next-line @typescript-eslint/default-param-last -- The first param is intended to be bound by the end user. */
   #__({ locale = this.config.defaultLocale, errorNotFound = this.config.errorNotFound, undefinedNotFound = this.config.undefinedNotFound, backupPath } = {}, key, replacements, returnArray) {
     if (!key) throw new Error(`A key string must be provided! Got ${key}.`);
 
@@ -76,7 +76,7 @@ module.exports = class I18nProvider {
       if (errorNotFound) throw new Error(`Key not found: "${key}"` + (backupPath ? ` (${backupPath}.${key})` : ''));
       if (undefinedNotFound) return;
       this.logWarn(`Missing default ("${this.config.defaultLocale}") localization for ${key}` + (backupPath ? ` (${backupPath}.${key})!` : '!'));
-      return this.config.notFoundMessage?.replaceAll('{key}', key) ?? key;
+      return this.config.notFoundMessage.replaceAll('{key}', key) || key;
     }
 
     return this.constructor.formatMessage(message, replacements);
@@ -86,7 +86,7 @@ module.exports = class I18nProvider {
   __(config, key, replacements) { return this.#__(config, key, replacements, false); }
 
   /** @type {import('.')['array__']} */
-  array__(config, key, replacements) { return this.#__(config, key, replacements, true); }
+  array__(config, key, replacements) { return this.#__(config, key, replacements, true); } // NOSONAR:S3800
 
   /** @type {import('.')['flatten']} */
   flatten(object, objectPath = '') {
@@ -117,7 +117,7 @@ module.exports = class I18nProvider {
     if (!replacements?.toString()) return message;
     if (typeof replacements != 'object') return message.replaceAll(/{\w+}/g, replacements.toString());
 
-    for (const [replacer, replacement] of Object.entries(replacements)) message = message.replaceAll(`{${replacer}}`, replacement?.toString());
+    for (const [replacer, replacement] of Object.entries(replacements)) message = message.replaceAll(`{${replacer}}`, replacement.toString());
 
     return message;
   }
