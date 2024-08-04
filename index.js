@@ -86,7 +86,7 @@ module.exports = class I18nProvider {
   __(config, key, replacements) { return this.#__(config, key, replacements, false); }
 
   /** @type {import('.')['array__']} */
-  array__(config, key, replacements) { return this.#__(config, key, replacements, true); } // NOSONAR:S3800
+  array__(config, key, replacements) { return this.#__(config, key, replacements, true); }
 
   /** @type {import('.')['flatten']} */
   flatten(object, objectPath = '') {
