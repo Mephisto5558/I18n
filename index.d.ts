@@ -36,5 +36,5 @@ declare class I18nProvider {
 
   logWarn(...msg: string[]): unknown;
 
-  static formatMessage(message: string, replacements?: string | Record<string, string>): typeof message;
+  static formatMessage(message: string, replacements?: string | Record<string, unknown>): typeof message;
 }
