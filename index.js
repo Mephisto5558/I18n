@@ -117,7 +117,12 @@ module.exports = class I18nProvider {
     if (!replacements?.toString()) return message;
     if (typeof replacements != 'object') return message.replaceAll(/{\w+}/g, replacements.toString());
 
-    for (const [replacer, replacement] of Object.entries(replacements)) message = message.replaceAll(`{${replacer}}`, replacement.toString());
+    for (const [replacer, replacement] of Object.entries(replacements)) {
+      if (!replacement?.toString()) continue;
+
+      /* eslint-disable-next-line @typescript-eslint/no-base-to-string -- up to the library user to not send an object.*/
+      message = message.replaceAll(`{${replacer}}`, replacement.toString());
+    }
 
     return message;
   }
