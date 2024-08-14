@@ -24,7 +24,7 @@
   },
   "devDependencies": {
     "@mephisto5558/eslint-config": "^2.0.0",
-    "eslint": "^9.8.0"
+    "eslint": "^9.9.0"
   },
   "repository": {
     "type": "git",
