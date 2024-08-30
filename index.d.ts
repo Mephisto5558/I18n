@@ -21,7 +21,7 @@ declare class I18nProvider {
   loadAllLocales(): Promise<void>;
 
   /** @returns the message*/
-  __<UNF extends boolean | undefined>(
+  __<UNF extends boolean | undefined = undefined>(
     config: i18nFuncConfig & { undefinedNotFound?: UNF }, key: string, replacements?: string | Record<string, string>
   ): UNF extends true ? string | undefined : string;
 
