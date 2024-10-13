@@ -115,7 +115,7 @@ module.exports = class I18nProvider {
   /** @type {(typeof import('.'))['formatMessage']} */
   static formatMessage(message, replacements) {
     if (!replacements?.toString()) return message;
-    if (typeof replacements != 'object') return message.replaceAll(/{\w+}/g, replacements.toString());
+    if (typeof replacements != 'object') return message.replaceAll(/\{\w+\}/g, replacements.toString());
 
     for (const [replacer, replacement] of Object.entries(replacements)) {
       if (!replacement?.toString()) continue;
