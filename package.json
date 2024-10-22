@@ -23,8 +23,8 @@
     "node": ">=20.11.0"
   },
   "devDependencies": {
-    "@mephisto5558/eslint-config": "^2.1.0",
-    "eslint": "^9.9.1"
+    "@mephisto5558/eslint-config": "^3.0.0",
+    "eslint": "^9.13.0"
   },
   "repository": {
     "type": "git",
