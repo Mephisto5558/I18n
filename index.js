@@ -112,7 +112,7 @@ module.exports = class I18nProvider {
     return Object.fromEntries(Object.entries(missing).filter(([, e]) => e.length));
   }
 
-  /** @type {(typeof import('.'))['formatMessage']} */
+  /** @type {(typeof import('.').default)['formatMessage']} */
   static formatMessage(message, replacements) {
     if (!replacements?.toString()) return message;
     if (typeof replacements != 'object') return message.replaceAll(/\{\w+\}/g, replacements.toString());

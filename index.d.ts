@@ -1,6 +1,9 @@
-type i18nFuncConfig = { locale?: string; errorNotFound?: boolean; undefinedNotFound?: boolean; backupPath?: string };
+import type { LocaleString } from 'discord-api-types/v10';
+export type Locale = Exclude<LocaleString, `en${string}`> | 'en';
 
-export = I18nProvider;
+type i18nFuncConfig = { locale?: Locale; errorNotFound?: boolean; undefinedNotFound?: boolean; backupPath?: string };
+
+export default I18nProvider;
 declare class I18nProvider {
   constructor(options: {
     localesPath?: string; defaultLocale?: string; separator?: string;
@@ -9,15 +12,14 @@ declare class I18nProvider {
   });
 
   config: {
-    localesPath: string; defaultLocale: string; separator: string;
+    localesPath: string; defaultLocale: Locale; separator: string;
     errorNotFound: boolean; undefinedNotFound: boolean; notFoundMessage: string;
   };
 
-  /** <locale key, file path>*/
-  availableLocales: Map<string, string>;
-  localeData: Record<string, string | string[]>;
+  availableLocales: Map<Locale, string>;
+  localeData: Record<Locale, string | string[]>;
 
-  loadLocale(locale: string): Promise<void>;
+  loadLocale(locale: Locale): Promise<void>;
   loadAllLocales(): Promise<void>;
 
   /** @returns the message*/
