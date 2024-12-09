@@ -22,18 +22,18 @@ declare class I18nProvider {
   loadLocale(locale: Locale): Promise<void>;
   loadAllLocales(): Promise<void>;
 
-  /** @returns the message*/
+  /** @returns the message */
   __<UNF extends boolean | undefined = undefined>(
     config: i18nFuncConfig & { undefinedNotFound?: UNF }, key: string, replacements?: string | Record<string, string>
   ): UNF extends true ? string | undefined : string;
 
-  /** same as {@link I18nProvider.__ __} but returns the whole array instead of a random element from an array.*/
+  /** same as {@link I18nProvider.__ __} but returns the whole array instead of a random element from an array. */
   array__(config: i18nFuncConfig, key: string, replacements?: string | Record<string, string>): string | string[];
 
-  /** @returns flatted object*/
+  /** @returns flatted object */
   flatten(object: object, objectPath: string): object;
 
-  /** @returns list of entries that are missing or equal with default data*/
+  /** @returns list of entries that are missing or equal with default data */
   findMissing(checkEqual: boolean): object;
 
   logWarn(...msg: string[]): unknown;

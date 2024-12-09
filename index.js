@@ -55,7 +55,7 @@ module.exports = class I18nProvider {
    * @param {string} key
    * @param {string | Record<string,string>} replacements
    * @param {boolean?} returnArray
-   * @returns {string|string[]} based on returnArray (only `string` if `false`)
+   * @returns {string | string[]} based on returnArray (only `string` if `false`)
    */
   /* eslint-disable-next-line @typescript-eslint/default-param-last -- The first param is intended to be bound by the end user. */
   #__({ locale = this.config.defaultLocale, errorNotFound = this.config.errorNotFound, undefinedNotFound = this.config.undefinedNotFound, backupPath } = {}, key, replacements, returnArray) {
@@ -120,7 +120,7 @@ module.exports = class I18nProvider {
     for (const [replacer, replacement] of Object.entries(replacements)) {
       if (!replacement?.toString()) continue;
 
-      /* eslint-disable-next-line @typescript-eslint/no-base-to-string -- up to the library user to not send an object.*/
+      /* eslint-disable-next-line @typescript-eslint/no-base-to-string -- up to the library user to not send an object. */
       message = message.replaceAll(`{${replacer}}`, replacement.toString());
     }
 
