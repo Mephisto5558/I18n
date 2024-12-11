@@ -1,10 +1,9 @@
-import type { LocaleString } from 'discord-api-types/v10';
-export type Locale = Exclude<LocaleString, `en${string}`> | 'en';
+import type { Locale as APILocale } from 'discord-api-types/v10';
 
 type i18nFuncConfig = { locale?: Locale; errorNotFound?: boolean; undefinedNotFound?: boolean; backupPath?: string };
 
-export default I18nProvider;
-declare class I18nProvider {
+export declare type Locale = Exclude<APILocale, `en${string}`> | 'en';
+export declare class I18nProvider {
   constructor(options: {
     localesPath?: string; defaultLocale?: string; separator?: string;
     notFoundMessage?: string; errorNotFound?: boolean; undefinedNotFound?: boolean;

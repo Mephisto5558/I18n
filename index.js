@@ -3,7 +3,7 @@ const
   path = require('node:path'),
   { randomInt } = require('node:crypto');
 
-module.exports = class I18nProvider {
+module.exports.I18nProvider = class I18nProvider {
   constructor({
     localesPath = './locales', defaultLocale = 'en', separator = '.', notFoundMessage = '',
     errorNotFound = false, undefinedNotFound = false, warnLoggingFunction = console.warn
