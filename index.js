@@ -109,7 +109,7 @@ module.exports.I18nProvider = class I18nProvider {
         return !this.localeData[locale][k];
       });
     }
-    return Object.fromEntries(Object.entries(missing).filter(([, e]) => e.length));
+    return Object.fromEntries(Object.entries(missing).filter(([, e]) => !!e.length));
   }
 
   /** @type {(typeof import('.').default)['formatMessage']} */
