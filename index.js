@@ -14,15 +14,12 @@ module.exports.I18nProvider = class I18nProvider {
     void this.loadAllLocales();
   }
 
-  /** @type {import('.')['loadLocale']} */
+  /** @type {import('.').I18nProvider['loadLocale']} */
   async loadLocale(locale) {
-    if (!locale) return;
-
-    const data = {};
     const filePath = this.availableLocales.get(locale);
-
     if (!filePath) return;
 
+    const data = {};
     for (const item of await readdir(filePath, { withFileTypes: true })) {
       if (item.isFile() && item.name.endsWith('.json')) data[item.name.replace('.json', '')] = JSON.parse(await readFile(`${filePath}/${item.name}`, 'utf8'));
       else {
@@ -35,7 +32,7 @@ module.exports.I18nProvider = class I18nProvider {
     this.localeData[locale] = this.flatten(data);
   }
 
-  /** @type {import('.')['loadAllLocales']} */
+  /** @type {import('.').I18nProvider['loadAllLocales']} */
   async loadAllLocales() {
     this.availableLocales = new Map(await readdir(this.config.localesPath).then(e => e.reduce(async (acc, e) => {
       if (!(await readdir(`${this.config.localesPath}/${e}`)).includes('.ignore')) (await acc).push([path.basename(e, '.json'), path.resolve(this.config.localesPath, e)]);
@@ -82,13 +79,13 @@ module.exports.I18nProvider = class I18nProvider {
     return this.constructor.formatMessage(message, replacements);
   }
 
-  /** @type {import('.')['__']} */
+  /** @type {import('.').I18nProvider['__']} */
   __(config, key, replacements) { return this.#__(config, key, replacements, false); }
 
-  /** @type {import('.')['array__']} */
+  /** @type {import('.').I18nProvider['array__']} */
   array__(config, key, replacements) { return this.#__(config, key, replacements, true); }
 
-  /** @type {import('.')['flatten']} */
+  /** @type {import('.').I18nProvider['flatten']} */
   flatten(object, objectPath = '') {
     return Object.keys(object).reduce((acc, key) => {
       const newObjectPath = [objectPath, key].filter(Boolean).join(this.config.separator);
@@ -98,7 +95,7 @@ module.exports.I18nProvider = class I18nProvider {
     }, {});
   }
 
-  /** @type {import('.')['findMissing']} */
+  /** @type {import('.').I18nProvider['findMissing']} */
   findMissing(checkEqual) {
     const defaultKeys = Object.keys(this.defaultLocaleData);
     const missing = {};
@@ -112,9 +109,9 @@ module.exports.I18nProvider = class I18nProvider {
     return Object.fromEntries(Object.entries(missing).filter(([, e]) => !!e.length));
   }
 
-  /** @type {(typeof import('.').default)['formatMessage']} */
+  /** @type {(typeof import('.').I18nProvider)['formatMessage']} */
   static formatMessage(message, replacements) {
-    if (!replacements?.toString()) return message;
+    if (replacements == undefined || replacements == '') return message;
     if (typeof replacements != 'object') return message.replaceAll(/\{\w+\}/g, replacements.toString());
 
     for (const [replacer, replacement] of Object.entries(replacements)) {
