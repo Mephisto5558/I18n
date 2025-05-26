@@ -25,7 +25,7 @@
   "devDependencies": {
     "@mephisto5558/eslint-config": "latest",
     "discord-api-types": "latest",
-    "eslint": "^9.20.1"
+    "eslint": "^9.27.0"
   },
   "repository": {
     "type": "git",
