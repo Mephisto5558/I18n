@@ -48,20 +48,22 @@ module.exports.I18nProvider = class I18nProvider {
 
   /**
    * Wrapper function to improve typing.
-   * @param {{ locale?: string; errorNotFound?: boolean; undefinedNotFound?: boolean; backupPath?: string }}config
+   * @param {{ locale?: string; errorNotFound?: boolean; undefinedNotFound?: boolean; backupPath?: string | string[] }}config
    * @param {string} key
    * @param {string | Record<string,string>} replacements
    * @param {boolean?} returnArray
    * @returns {string | string[]} based on returnArray (only `string` if `false`)
    */
   /* eslint-disable-next-line @typescript-eslint/default-param-last -- The first param is intended to be bound by the end user. */
-  #__({ locale = this.config.defaultLocale, errorNotFound = this.config.errorNotFound, undefinedNotFound = this.config.undefinedNotFound, backupPath } = {}, key, replacements, returnArray) {
+  #__({ locale = this.config.defaultLocale, errorNotFound = this.config.errorNotFound, undefinedNotFound = this.config.undefinedNotFound, backupPath = [] } = {}, key, replacements, returnArray) {
     if (!key) throw new Error(`A key string must be provided! Got ${key}.`);
 
-    let message = this.localeData[locale]?.[key] ?? (backupPath && this.localeData[locale]?.[`${backupPath}.${key}`]);
+    const backupKeys = (Array.isArray(backupPath) ? backupPath : [backupPath]).map(e => `${e}.${key}`);
+
+    let message = [key, ...backupKeys].find(e => this.localeData[locale]?.[e]);
     if (!message) {
-      if (!undefinedNotFound) this.logWarn(`Missing "${locale}" localization for ${key}` + (backupPath ? ` (${backupPath}.${key})!` : '!'));
-      if (this.config.defaultLocale != locale) message = this.defaultLocaleData[key] ?? (backupPath && this.defaultLocaleData[`${backupPath}.${key}`]);
+      if (!undefinedNotFound) this.logWarn(`Missing "${locale}" localization for ${key}` + (backupKeys.length ? ` (${backupKeys.join(' or ')})!` : '!'));
+      if (this.config.defaultLocale != locale) message = [key, ...backupKeys].find(e => this.defaultLocaleData[locale]?.[e]);
     }
 
     if (Array.isArray(message)) {
@@ -70,9 +72,10 @@ module.exports.I18nProvider = class I18nProvider {
     }
 
     if (!message) {
-      if (errorNotFound) throw new Error(`Key not found: "${key}"` + (backupPath ? ` (${backupPath}.${key})` : ''));
+      if (errorNotFound) throw new Error(`Key not found: "${key}"` + (backupKeys.length ? ` (${backupKeys.join(' or ')})` : ''));
       if (undefinedNotFound) return;
-      this.logWarn(`Missing default ("${this.config.defaultLocale}") localization for ${key}` + (backupPath ? ` (${backupPath}.${key})!` : '!'));
+
+      this.logWarn(`Missing default ("${this.config.defaultLocale}") localization for ${key}` + (backupKeys.length ? ` (${backupKeys.join(' or ')})!` : '!'));
       return this.config.notFoundMessage.replaceAll('{key}', key) || key;
     }
 
