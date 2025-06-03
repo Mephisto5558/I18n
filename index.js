@@ -60,10 +60,10 @@ module.exports.I18nProvider = class I18nProvider {
 
     const backupKeys = (Array.isArray(backupPath) ? backupPath : [backupPath]).map(e => `${e}.${key}`);
 
-    let message = [key, ...backupKeys].find(e => this.localeData[locale]?.[e]);
+    let message = [key, ...backupKeys].map(k => this.localeData[locale]?.[k]).find(Boolean);
     if (!message) {
       if (!undefinedNotFound) this.logWarn(`Missing "${locale}" localization for ${key}` + (backupKeys.length ? ` (${backupKeys.join(' or ')})!` : '!'));
-      if (this.config.defaultLocale != locale) message = [key, ...backupKeys].find(e => this.defaultLocaleData[locale]?.[e]);
+      if (this.config.defaultLocale != locale) message = [key, ...backupKeys].map(k => this.defaultLocaleData?.[k]).find(Boolean);
     }
 
     if (Array.isArray(message)) {
