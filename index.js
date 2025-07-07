@@ -48,7 +48,7 @@ module.exports.I18nProvider = class I18nProvider {
 
   /**
    * Wrapper function to improve typing.
-   * @param {{ locale?: string; errorNotFound?: boolean; undefinedNotFound?: boolean; backupPath?: string | string[] }}config
+   * @param {{ locale?: string; errorNotFound?: boolean; undefinedNotFound?: boolean; backupPath?: string | string[] }} config
    * @param {string} key
    * @param {string | Record<string,string>} replacements
    * @param {boolean?} returnArray
