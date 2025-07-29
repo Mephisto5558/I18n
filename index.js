@@ -4,6 +4,9 @@ const
   { randomInt } = require('node:crypto');
 
 module.exports.I18nProvider = class I18nProvider {
+  /** @type {Record<string, Intl.NumberFormat>} */
+  #numberFormatters = {};
+
   constructor({
     localesPath = './locales', defaultLocale = 'en', separator = '.', notFoundMessage = '',
     errorNotFound = false, undefinedNotFound = false, warnLoggingFunction = console.warn
@@ -27,6 +30,8 @@ module.exports.I18nProvider = class I18nProvider {
         for (const file of await readdir(`${filePath}/${item.name}`))
           if (file.endsWith('.json')) data[item.name][file.replace('.json', '')] = JSON.parse(await readFile(`${filePath}/${item.name}/${file}`, 'utf8'));
       }
+
+      if (Object.keys(data).length) this.#numberFormatters[locale] = new Intl.NumberFormat(locale);
     }
 
     this.localeData[locale] = this.flatten(data);
@@ -87,6 +92,11 @@ module.exports.I18nProvider = class I18nProvider {
 
   /** @type {import('.').I18nProvider['array__']} */
   array__(config, key, replacements) { return this.#__(config, key, replacements, true); }
+
+  /** @type {import('.').I18nProvider['formatNumber']} */
+  formatNumber(num, locale) {
+    return this.#numberFormatters[locale ?? this.config.defaultLocale]?.format(num) ?? num;
+  }
 
   /** @type {import('.').I18nProvider['flatten']} */
   flatten(object, objectPath = '') {

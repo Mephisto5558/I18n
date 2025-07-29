@@ -1,6 +1,7 @@
 import type { Locale as APILocale } from 'discord-api-types/v10';
 
 type i18nFuncConfig = { locale?: Locale; errorNotFound?: boolean; undefinedNotFound?: boolean; backupPath?: string | string[] };
+type i18nFuncConfigPart = Omit<i18nFuncConfig, 'undefinedNotFound' | 'locale'>;
 
 export declare type Locale = Exclude<APILocale, `en${string}`> | 'en';
 export declare class I18nProvider {
@@ -23,11 +24,15 @@ export declare class I18nProvider {
 
   /** @returns the message */
   __<UNF extends boolean | undefined = undefined>(
-    config: i18nFuncConfig & { undefinedNotFound?: UNF }, key: string, replacements?: string | Record<string, string>
+    config: i18nFuncConfigPart & { undefinedNotFound?: UNF; locale?: Locale }, key: string, replacements?: string | Record<string, string>
   ): UNF extends true ? string | undefined : string;
 
   /** same as {@link I18nProvider.__ __} but returns the whole array instead of a random element from an array. */
   array__(config: i18nFuncConfig, key: string, replacements?: string | Record<string, string>): string | string[];
+
+  /** @returns the formatted number as a string, or the original number if the formatter for the locale does not exist. */
+  formatNumber<N extends number | bigint>(num: N, locale: Locale): string | N;
+  formatNumber(num: number | bigint, locale?: never): string;
 
   /** @returns flatted object */
   flatten(object: object, objectPath: string): object;
