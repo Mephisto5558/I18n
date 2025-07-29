@@ -22,12 +22,14 @@ export declare type Translator<
   formatNumber<N extends number | bigint>(num: N): L extends undefined ? string : string | N;
 };
 
+export declare type I18nProviderInitOptions = {
+  localesPath?: string; defaultLocale?: Locale; separator?: string;
+  notFoundMessage?: string; errorNotFound?: boolean; undefinedNotFound?: boolean;
+  warnLoggingFunction?(this: void, ...msg: string[]): unknown;
+};
+
 export declare class I18nProvider {
-  constructor(options: {
-    localesPath?: string; defaultLocale?: string; separator?: string;
-    notFoundMessage?: string; errorNotFound?: boolean; undefinedNotFound?: boolean;
-    warnLoggingFunction?(...msg: string[]): unknown;
-  });
+  constructor(options: I18nProviderInitOptions);
 
   config: {
     localesPath: string; defaultLocale: Locale; separator: string;
@@ -36,6 +38,7 @@ export declare class I18nProvider {
 
   availableLocales: Map<Locale, string>;
   localeData: Record<Locale, string | string[]>;
+  defaultLocaleData: I18nProvider['localeData'][Locale];
 
   loadLocale(locale: Locale): Promise<void>;
   loadAllLocales(): Promise<void>;
@@ -57,10 +60,10 @@ export declare class I18nProvider {
   formatNumber(num: number | bigint, locale?: never): string;
 
   /** @returns flatted object */
-  flatten(object: object, objectPath: string): object;
+  flatten(object: Record<string, unknown>, objectPath?: string): Record<string, unknown>;
 
   /** @returns list of entries that are missing or equal with default data */
-  findMissing(checkEqual: boolean): object;
+  findMissing(checkEqual?: boolean): Record<string, string[]>;
 
   logWarn(...msg: string[]): unknown;
 
