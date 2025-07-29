@@ -4,6 +4,24 @@ type i18nFuncConfig = { locale?: Locale; errorNotFound?: boolean; undefinedNotFo
 type i18nFuncConfigPart = Omit<i18nFuncConfig, 'undefinedNotFound' | 'locale'>;
 
 export declare type Locale = Exclude<APILocale, `en${string}`> | 'en';
+
+export declare type Translator<
+  UNF extends boolean = false,
+  L extends Locale | undefined = undefined
+> = {
+  (
+    key: string, replacements?: string | Record<string, string>
+  ): UNF extends true ? string | undefined : string;
+
+  config: i18nFuncConfigPart & { undefinedNotFound?: UNF; locale?: L };
+  defaultConfig: I18nProvider['config'];
+
+  array__(key: string, replacements?: string | Record<string, string>
+  ): string | string[];
+
+  formatNumber<N extends number | bigint>(num: N): L extends undefined ? string : string | N;
+};
+
 export declare class I18nProvider {
   constructor(options: {
     localesPath?: string; defaultLocale?: string; separator?: string;
@@ -26,6 +44,10 @@ export declare class I18nProvider {
   __<UNF extends boolean | undefined = undefined>(
     config: i18nFuncConfigPart & { undefinedNotFound?: UNF; locale?: Locale }, key: string, replacements?: string | Record<string, string>
   ): UNF extends true ? string | undefined : string;
+
+  getTranslator<UNF extends boolean = false, L extends Locale | undefined = undefined>(
+    config?: i18nFuncConfigPart & { undefinedNotFound?: UNF; locale?: L }
+  ): Translator<UNF, L>;
 
   /** same as {@link I18nProvider.__ __} but returns the whole array instead of a random element from an array. */
   array__(config: i18nFuncConfig, key: string, replacements?: string | Record<string, string>): string | string[];

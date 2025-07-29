@@ -51,6 +51,18 @@ module.exports.I18nProvider = class I18nProvider {
     if (!this.defaultLocaleData) throw new Error(`There are no language files for the default locale (${this.config.defaultLocale}) in the supplied locales path!`);
   }
 
+  /** @type {import('.').I18nProvider['getTranslator']} */
+  getTranslator(config = {}) {
+    const translator = this.__.bind(this, config);
+    translator.config = config;
+    translator.defaultConfig = this.config;
+
+    translator.array__ = this.array__.bind(this, config);
+    translator.formatNumber = num => this.formatNumber(num, config.locale);
+
+    return translator;
+  }
+
   /**
    * Wrapper function to improve typing.
    * @param {{ locale?: string; errorNotFound?: boolean; undefinedNotFound?: boolean; backupPath?: string | string[] }} config
