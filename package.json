@@ -20,12 +20,12 @@
   "author": "Mephisto5558",
   "license": "MIT",
   "engines": {
-    "node": ">=20.11.0"
+    "node": ">=20.19.0"
   },
   "devDependencies": {
     "@mephisto5558/eslint-config": "latest",
-    "discord-api-types": "latest",
-    "eslint": "^9.27.0"
+    "@types/node": "^20.19.0",
+    "discord-api-types": "latest"
   },
   "repository": {
     "type": "git",
