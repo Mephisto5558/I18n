@@ -24,7 +24,7 @@
   },
   "devDependencies": {
     "@mephisto5558/eslint-config": "latest",
-    "@types/node": "^20.19.0",
+    "@types/node": "^24.1.0",
     "discord-api-types": "latest"
   },
   "repository": {
