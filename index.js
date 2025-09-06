@@ -11,10 +11,10 @@ module.exports.I18nProvider = class I18nProvider {
 
   /** @param {import('.').I18nProviderInitOptions} options */
   constructor({
-    localesPath = './locales', defaultLocale = 'en', separator = '.', notFoundMessage = '',
+    localesPath = './locales', defaultLocale = 'en', separator = '.', notFoundMessage = '', backupPaths = [],
     errorNotFound = false, undefinedNotFound = false, warnLoggingFunction = console.warn
   } = {}) {
-    this.config = { localesPath, defaultLocale, separator, errorNotFound, undefinedNotFound, notFoundMessage };
+    this.config = { localesPath, defaultLocale, separator, errorNotFound, undefinedNotFound, notFoundMessage, backupPaths };
     this.logWarn = warnLoggingFunction;
 
     void this.loadAllLocales();
@@ -83,11 +83,11 @@ module.exports.I18nProvider = class I18nProvider {
   /* eslint-disable-next-line @typescript-eslint/default-param-last -- The first param is intended to be bound by the end user. */
   #__({
     locale = this.config.defaultLocale, errorNotFound = this.config.errorNotFound,
-    undefinedNotFound = this.config.undefinedNotFound, backupPath = []
+    undefinedNotFound = this.config.undefinedNotFound, backupPaths = []
   } = {}, key, replacements, returnArray) {
     if (!key) throw new Error(`A key string must be provided! Got ${key}.`);
 
-    const backupKeys = (Array.isArray(backupPath) ? backupPath : [backupPath]).map(e => `${e}.${key}`);
+    const backupKeys = backupPaths.map(e => `${e}.${key}`);
 
     let message = locale in this.localeData ? [key, ...backupKeys].map(k => this.localeData[locale][k]).find(Boolean) : undefined;
     if (!message) {

@@ -1,6 +1,6 @@
 import type { Locale as APILocale } from 'discord-api-types/v10';
 
-type i18nFuncConfig = { locale?: Locale; errorNotFound?: boolean; undefinedNotFound?: boolean; backupPath?: string | string[] };
+type i18nFuncConfig = { locale?: Locale; errorNotFound?: boolean; undefinedNotFound?: boolean; backupPaths: string[] };
 type i18nFuncConfigPart = Omit<i18nFuncConfig, 'undefinedNotFound' | 'locale'>;
 
 export declare type Locale = Exclude<APILocale, `en${string}`> | 'en';
@@ -24,7 +24,7 @@ export declare type Translator<
 
 export declare type I18nProviderInitOptions = {
   localesPath?: string; defaultLocale?: Locale; separator?: string;
-  notFoundMessage?: string; errorNotFound?: boolean; undefinedNotFound?: boolean;
+  notFoundMessage?: string; errorNotFound?: boolean; undefinedNotFound?: boolean; backupPaths?: string[];
   warnLoggingFunction?(this: void, ...msg: string[]): unknown;
 };
 
@@ -45,7 +45,7 @@ export declare class I18nProvider {
 
   /** @returns the message */
   __<UNF extends boolean | undefined = undefined>(
-    config: i18nFuncConfigPart & { undefinedNotFound?: UNF; locale?: Locale }, key: string, replacements?: string | Record<string, string>
+    config: Partial<i18nFuncConfigPart> & { undefinedNotFound?: UNF; locale?: Locale }, key: string, replacements?: string | Record<string, string>
   ): UNF extends true ? string | undefined : string;
 
   getTranslator<UNF extends boolean = false, L extends Locale | undefined = undefined>(
@@ -53,7 +53,7 @@ export declare class I18nProvider {
   ): Translator<UNF, L>;
 
   /** same as {@link I18nProvider.__ __} but returns the whole array instead of a random element from an array. */
-  array__(config: i18nFuncConfig, key: string, replacements?: string | Record<string, string>): string | string[];
+  array__(config: Partial<i18nFuncConfig>, key: string, replacements?: string | Record<string, string>): string | string[];
 
   /** @returns the formatted number as a string, or the original number if the formatter for the locale does not exist. */
   formatNumber<N extends number | bigint>(num: N, locale: Locale): string | N;
