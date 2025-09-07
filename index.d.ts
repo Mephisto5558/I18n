@@ -1,5 +1,8 @@
 import type { Locale as APILocale } from 'discord-api-types/v10';
 
+// Source: https://github.com/microsoft/TypeScript/issues/54451#issue-1732749888
+type Omit<T, K extends keyof T> = { [P in keyof T as P extends K ? never : P]: T[P] };
+
 type i18nFuncConfig = { locale?: Locale; errorNotFound?: boolean; undefinedNotFound?: boolean; backupPaths: string[] };
 type i18nFuncConfigPart = Omit<i18nFuncConfig, 'undefinedNotFound' | 'locale'>;
 
@@ -29,6 +32,7 @@ export declare type I18nProviderInitOptions = {
 };
 
 export declare class I18nProvider {
+  'constructor': typeof I18nProvider;
   constructor(options: I18nProviderInitOptions);
 
   config: {
@@ -37,7 +41,7 @@ export declare class I18nProvider {
   };
 
   availableLocales: Map<Locale, string>;
-  localeData: Record<Locale, string | string[]>;
+  localeData: Record<Locale, Record<string, string | string[]>>;
   defaultLocaleData: I18nProvider['localeData'][Locale];
 
   loadLocale(locale: Locale): Promise<void>;
@@ -56,8 +60,7 @@ export declare class I18nProvider {
   array__(config: Partial<i18nFuncConfig>, key: string, replacements?: string | Record<string, string>): string | string[];
 
   /** @returns the formatted number as a string, or the original number if the formatter for the locale does not exist. */
-  formatNumber<N extends number | bigint>(num: N, locale: Locale): string | N;
-  formatNumber(num: number | bigint, locale?: never): string;
+  formatNumber<N extends number | bigint, L extends Locale | undefined>(num: N, locale?: L): L extends undefined ? N : string;
 
   /** @returns flatted object */
   flatten(object: Record<string, unknown>, objectPath?: string): Record<string, unknown>;

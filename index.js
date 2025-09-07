@@ -1,7 +1,7 @@
 const
-  { readdir, readFile } = require('node:fs/promises'),
-  path = require('node:path'),
-  { randomInt } = require('node:crypto');
+  { randomInt } = require('node:crypto'),
+  { readFile, readdir } = require('node:fs/promises'),
+  path = require('node:path');
 
 module.exports.I18nProvider = class I18nProvider {
   /** @type {import('.').I18nProvider['availableLocales']} */ availableLocales;
@@ -25,7 +25,7 @@ module.exports.I18nProvider = class I18nProvider {
     const filePath = this.availableLocales.get(locale);
     if (!filePath) return;
 
-    const data = {};
+    const /** @type {Record<string, JSONValue>} */ data = {};
     for (const item of await readdir(filePath, { withFileTypes: true })) {
       if (item.isFile() && item.name.endsWith('.json'))
         data[item.name.replace('.json', '')] = JSON.parse(await readFile(`${filePath}/${item.name}`, 'utf8'));
@@ -45,7 +45,7 @@ module.exports.I18nProvider = class I18nProvider {
 
   /** @type {import('.').I18nProvider['loadAllLocales']} */
   async loadAllLocales() {
-    this.availableLocales = new Map(await readdir(this.config.localesPath).then(e => e.reduce(async (acc, e) => {
+    this.availableLocales = new Map(await readdir(this.config.localesPath).then(async e => e.reduce(async (acc, e) => {
       if (!(await readdir(`${this.config.localesPath}/${e}`)).includes('.ignore'))
         (await acc).push([path.basename(e, '.json'), path.resolve(this.config.localesPath, e)]);
       return acc;
@@ -55,7 +55,7 @@ module.exports.I18nProvider = class I18nProvider {
     for (const [locale] of this.availableLocales) await this.loadLocale(locale);
 
     this.defaultLocaleData = this.localeData[this.config.defaultLocale];
-    if (!this.defaultLocaleData)
+    if (!this.defaultLocaleData) /* eslint-disable-line @typescript-eslint/no-unnecessary-condition */
       throw new Error(`There are no language files for the default locale (${this.config.defaultLocale}) in the supplied locales path!`);
   }
 
@@ -75,6 +75,7 @@ module.exports.I18nProvider = class I18nProvider {
 
   /**
    * Wrapper function to improve typing.
+   * @this {import('.').I18nProvider}
    * @param {import('.').i18nFuncConfig} config
    * @param {string} key
    * @param {string | Record<string,string>} replacements
@@ -140,8 +141,9 @@ module.exports.I18nProvider = class I18nProvider {
 
   /** @type {import('.').I18nProvider['findMissing']} */
   findMissing(checkEqual) {
-    const defaultKeys = Object.keys(this.defaultLocaleData);
-    const missing = {};
+    const
+      defaultKeys = Object.keys(this.defaultLocaleData),
+      missing = {};
 
     for (const [locale] of this.availableLocales) {
       missing[locale] = defaultKeys.filter(k => {
