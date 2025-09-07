@@ -25,6 +25,7 @@
   "devDependencies": {
     "@mephisto5558/eslint-config": "latest",
     "@types/node": "^20.19.0",
+    "better-typescript-lib": "^2.11.0",
     "discord-api-types": "latest"
   },
   "repository": {
