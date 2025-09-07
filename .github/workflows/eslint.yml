@@ -15,4 +15,4 @@ permissions:
 
 jobs:
   call-eslint-workflow:
-    uses: Mephisto5558/Mephisto5558/workflows/eslint.yml@main
+    uses: Mephisto5558/Mephisto5558/.github/workflows/eslint.yml@main
