@@ -52,6 +52,7 @@ export declare class I18nProvider {
     config: Partial<i18nFuncConfigPart> & { undefinedNotFound?: UNF; locale?: Locale }, key: string, replacements?: string | Record<string, string>
   ): UNF extends true ? string | undefined : string;
 
+  /** `config` is inherited from the class instance's {@link I18nProvider.config config} */
   getTranslator<UNF extends boolean = false, L extends Locale | undefined = undefined>(
     config?: i18nFuncConfigPart & { undefinedNotFound?: UNF; locale?: L }
   ): Translator<UNF, L>;

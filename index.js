@@ -61,9 +61,12 @@ module.exports.I18nProvider = class I18nProvider {
 
   /** @type {import('.').I18nProvider['getTranslator']} */
   getTranslator(config = {}) {
-    const translator = this.__.bind(this, config);
-    translator.config = config;
+    const 
+      translatorConfig = {...this.config, ...config},
+      /** @type {import('.').Translator} */ translator = this.__.bind(this, translatorConfig);
+
     translator.defaultConfig = this.config;
+    translator.config = translatorConfig;
 
     translator.array__ = this.array__.bind(this, config);
 
