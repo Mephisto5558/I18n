@@ -6,8 +6,12 @@ const
 module.exports.I18nProvider = class I18nProvider {
   /** @type {import('.').I18nProvider['availableLocales']} */ availableLocales;
   /** @type {import('.').I18nProvider['localeData']} */ localeData;
-  /** @type {import('.').I18nProvider['defaultLocaleData']} */ defaultLocaleData = {};
   /** @type {Record<string, Intl.NumberFormat>} */ #numberFormatters = {};
+
+  /** @type {import('.').I18nProvider['defaultLocaleData']} */
+  get defaultLocaleData() {
+    return this.localeData[this.config.defaultLocale];
+  }
 
   /** @param {import('.').I18nProviderInitOptions} options */
   constructor({
@@ -16,8 +20,22 @@ module.exports.I18nProvider = class I18nProvider {
   } = {}) {
     this.config = { localesPath, defaultLocale, separator, errorNotFound, undefinedNotFound, notFoundMessage, backupPaths };
     this.logWarn = warnLoggingFunction;
+  }
 
-    void this.loadAllLocales();
+  async init() {
+    this.localeData = {};
+    await this.fetchAvailableLocales();
+    await this.loadAllLocales();
+
+    return this;
+  }
+
+  async fetchAvailableLocales() {
+    this.availableLocales = new Map(await readdir(this.config.localesPath).then(async e => e.reduce(async (acc, e) => {
+      if (!(await readdir(`${this.config.localesPath}/${e}`)).includes('.ignore'))
+        (await acc).push([path.basename(e, '.json'), path.resolve(this.config.localesPath, e)]);
+      return acc;
+    }, Promise.resolve([]))));
   }
 
   /** @type {import('.').I18nProvider['loadLocale']} */
@@ -45,24 +63,16 @@ module.exports.I18nProvider = class I18nProvider {
 
   /** @type {import('.').I18nProvider['loadAllLocales']} */
   async loadAllLocales() {
-    this.availableLocales = new Map(await readdir(this.config.localesPath).then(async e => e.reduce(async (acc, e) => {
-      if (!(await readdir(`${this.config.localesPath}/${e}`)).includes('.ignore'))
-        (await acc).push([path.basename(e, '.json'), path.resolve(this.config.localesPath, e)]);
-      return acc;
-    }, Promise.resolve([]))));
-    this.localeData = {};
-
     for (const [locale] of this.availableLocales) await this.loadLocale(locale);
 
-    this.defaultLocaleData = this.localeData[this.config.defaultLocale];
     if (!this.defaultLocaleData) /* eslint-disable-line @typescript-eslint/no-unnecessary-condition */
       throw new Error(`There are no language files for the default locale (${this.config.defaultLocale}) in the supplied locales path!`);
   }
 
   /** @type {import('.').I18nProvider['getTranslator']} */
   getTranslator(config = {}) {
-    const 
-      translatorConfig = {...this.config, ...config},
+    const
+      translatorConfig = { ...this.config, ...config },
       /** @type {import('.').Translator} */ translator = this.__.bind(this, translatorConfig);
 
     translator.defaultConfig = this.config;

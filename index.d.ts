@@ -42,8 +42,11 @@ export declare class I18nProvider {
 
   availableLocales: Map<Locale, string>;
   localeData: Record<Locale, Record<string, string | string[]>>;
-  defaultLocaleData: I18nProvider['localeData'][Locale];
+  get defaultLocaleData(): I18nProvider['localeData'][Locale];
 
+  /** Loads locale data */
+  init(): Promise<this>;
+  fetchAvailableLocales(): Promise<void>;
   loadLocale(locale: Locale): Promise<void>;
   loadAllLocales(): Promise<void>;
 
