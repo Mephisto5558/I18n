@@ -30,7 +30,7 @@ export declare type Translator<
   array__(key: string, replacements?: string | Record<string, string>
   ): string | string[];
 
-  formatNumber<N extends number | bigint>(num: N): L extends undefined ? string : string | N;
+  formatNumber<N extends number | bigint>(num: N): L extends undefined ? N : N | `${L}`;
 };
 
 export class I18nProvider {
@@ -193,8 +193,8 @@ export class I18nProvider {
   }
 
   /** @returns the formatted number as a string, or the original number if the formatter for the locale does not exist. */
-  formatNumber<N extends number | bigint, L extends Locale | undefined>(num: N, locale?: L): L extends undefined ? N : string {
-    return (this.#numberFormatters[locale ?? this.config.defaultLocale]?.format(num) ?? num) as L extends undefined ? N : string;
+  formatNumber<N extends number | bigint, L extends Locale | undefined>(num: N, locale?: L): L extends undefined ? N : N | `${L}` {
+    return (this.#numberFormatters[locale ?? this.config.defaultLocale]?.format(num) ?? String(num)) as L extends undefined ? N : N | `${L}`;
   }
 
   /** @returns flatted object */
