@@ -45,11 +45,15 @@ export class I18nProvider {
     localesPath?: string; defaultLocale?: Locale; separator?: string; notFoundMessage?: string; backupPaths?: string[];
     errorNotFound?: boolean; undefinedNotFound?: boolean; warnLoggingFunction?(this: void, ...msg: string[]): unknown;
   } = {}) {
-    this.config = { localesPath, defaultLocale, separator, notFoundMessage, backupPaths, errorNotFound, undefinedNotFound };
+    this.config = {
+      localesPath: path.resolve(localesPath),
+      defaultLocale, separator, notFoundMessage, backupPaths, errorNotFound, undefinedNotFound
+    };
     if (warnLoggingFunction) this.logWarn = warnLoggingFunction;
   }
 
   config: {
+    /** always a fully resolved path */
     localesPath: string; defaultLocale: Locale; separator: string; backupPaths: string[];
     errorNotFound: boolean; undefinedNotFound: boolean; notFoundMessage: string;
   };
@@ -83,33 +87,31 @@ export class I18nProvider {
     const filePath = this.availableLocales.get(locale);
     if (!filePath) return;
 
-    const data: Record<string, LocaleData | Record<string, LocaleData>> = {};
-    for (const item of await readdir(filePath, { withFileTypes: true })) {
-      if (item.isFile() && path.extname(item.name) == '.json') {
-        data[path.basename(item.name, '.json')] = (await import(
-          pathToFileURL(`${filePath}/${item.name}`).href, { with: { type: 'json' } }
-        ) as { default: LocaleData }).default;
-      }
-      else {
-        data[item.name] = {};
-        for (const file of await readdir(`${filePath}/${item.name}`)) {
-          if (path.extname(file) != '.json') continue;
-          /* eslint-disable-next-line @typescript-eslint/no-non-null-assertion */
-          data[item.name]![path.basename(file, '.json')] = (await import(
-            pathToFileURL(`${filePath}/${item.name}/${file}`).href, { with: { type: 'json' } }
-          ) as { default: LocaleData }).default;
+    /* eslint-disable-next-line @typescript-eslint/consistent-indexed-object-style -- Record<> does not support recursive types. */
+    const data: { [x: string]: LocaleData | typeof data } = {};
+    for (const file of await readdir(filePath, { recursive: true, withFileTypes: true })) {
+      if (!file.isFile() || !file.name.endsWith('.json')) continue;
+
+      let current = data;
+      const relativePath = path.relative(filePath, file.parentPath);
+      if (relativePath) {
+        for (const part of relativePath.split(path.sep)) {
+          current[part] ??= {};
+          current = current[part] as typeof data;
         }
       }
 
-      if (Object.keys(data).length) this.#numberFormatters[locale] = new Intl.NumberFormat(locale);
+      current[path.basename(file.name, '.json')] = (await import(
+        pathToFileURL(path.join(file.parentPath, file.name)).href, { with: { type: 'json' } }
+      ) as { default: LocaleData }).default;
     }
 
+    if (Object.keys(data).length) this.#numberFormatters[locale] = new Intl.NumberFormat(locale);
     this.localeData[locale] = this.flatten(data);
   }
 
   async loadAllLocales(): Promise<void> {
-    for (const [locale] of this.availableLocales) await this.loadLocale(locale);
-
+    await Promise.all(this.availableLocales.keys().map(async locale => this.loadLocale(locale)));
     if (!this.defaultLocaleData) /* eslint-disable-line @typescript-eslint/no-unnecessary-condition */
       throw new Error(`There are no language files for the default locale (${this.config.defaultLocale}) in the supplied locales path!`);
   }
@@ -130,7 +132,7 @@ export class I18nProvider {
     translator.array__ = this.array__.bind(this, config);
 
     /* eslint-disable-next-line @typescript-eslint/explicit-function-return-type */
-    translator.formatNumber = num => this.formatNumber<number | bigint, L>(num, config.locale);
+    translator.formatNumber = num => this.formatNumber<typeof num, L>(num, config.locale);
 
     return translator;
   }
