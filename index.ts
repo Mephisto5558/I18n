@@ -13,10 +13,10 @@ type Omit<T, K extends keyof T> = { [P in keyof T as P extends K ? never : P]: T
 type i18nFuncConfig = { locale?: Locale; errorNotFound?: boolean; undefinedNotFound?: boolean; backupPaths: string[] };
 type i18nFuncConfigPart = Partial<Omit<i18nFuncConfig, 'undefinedNotFound' | 'locale'>>;
 
-export declare type Locale = Exclude<APILocale, `en${string}`> | 'en';
+export type Locale = Exclude<APILocale, `en${string}`> | 'en';
 type LocaleData = Record<string, string | string[]>;
 
-export declare type Translator<
+export type Translator<
   UNF extends boolean = false,
   L extends Locale | undefined = undefined
 > = {
