@@ -2,38 +2,40 @@
   "name": "@mephisto5558/i18n",
   "version": "1.5.0",
   "description": "I18n package using flattened keys",
-  "main": "index.js",
-  "types": "index.d.ts",
-  "files": [
-    "index.js",
-    "index.d.ts"
-  ],
-  "scripts": {
-    "test": "echo \"Error: no test specified\""
-  },
   "keywords": [
     "internationalization",
     "localization",
     "i18n",
     "l10n"
   ],
-  "author": "Mephisto5558",
-  "license": "MIT",
-  "engines": {
-    "node": ">=20.19.0"
-  },
-  "devDependencies": {
-    "@mephisto5558/eslint-config": "latest",
-    "@types/node": "20.x",
-    "better-typescript-lib": "latest",
-    "discord-api-types": "latest"
+  "homepage": "https://github.com/Mephisto5558/I18n#readme",
+  "bugs": {
+    "url": "https://github.com/Mephisto5558/I18n/issues"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Mephisto5558/I18n.git"
   },
-  "bugs": {
-    "url": "https://github.com/Mephisto5558/I18n/issues"
+  "license": "MIT",
+  "author": "Mephisto5558",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "watch": "tsc --watch"
   },
-  "homepage": "https://github.com/Mephisto5558/I18n#readme"
+  "devDependencies": {
+    "@mephisto5558/eslint-config": "latest",
+    "@types/node": "20.x",
+    "better-typescript-lib": "latest",
+    "discord-api-types": "latest",
+    "typescript": "latest"
+  },
+  "engines": {
+    "node": ">=20.19.0"
+  }
 }
