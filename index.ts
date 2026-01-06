@@ -1,5 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-type-assertion */
 
+import type * as __ from '@mephisto5558/better-types'; /* eslint-disable-line import-x/order, import-x/no-namespace -- load in global definitions */
+
 import { randomInt } from 'node:crypto';
 import { readdir } from 'node:fs/promises';
 import path from 'node:path';
@@ -7,11 +9,8 @@ import { pathToFileURL } from 'node:url';
 
 import type { Locale as APILocale } from 'discord-api-types/v10';
 
-// Source: https://github.com/microsoft/TypeScript/issues/54451#issue-1732749888
-type Omit<T, K extends keyof T> = { [P in keyof T as P extends K ? never : P]: T[P] };
-
 type i18nFuncConfig = { locale?: Locale; errorNotFound?: boolean; undefinedNotFound?: boolean; backupPaths: string[] };
-type i18nFuncConfigPart = Partial<Omit<i18nFuncConfig, 'undefinedNotFound' | 'locale'>>;
+type i18nFuncConfigPart = Partial<StrictOmit<i18nFuncConfig, 'undefinedNotFound' | 'locale'>>;
 
 export type Locale = Exclude<APILocale, `en${string}`> | 'en';
 type LocaleData = Record<string, string | string[]>;
@@ -127,7 +126,7 @@ export class I18nProvider {
       translator: Translator<UNF, L> = this.__.bind(this, translatorConfig);
 
     translator.defaultConfig = this.config;
-    translator.config = translatorConfig as Omit<I18nProvider['config'], 'undefinedNotFound'> & { undefinedNotFound: UNF; locale: L };
+    translator.config = translatorConfig as StrictOmit<I18nProvider['config'], 'undefinedNotFound'> & { undefinedNotFound: UNF; locale: L };
 
     translator.array__ = this.array__.bind(this, config);
 
