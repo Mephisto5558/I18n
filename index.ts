@@ -22,7 +22,8 @@ export type Translator<
   (
     key: string, replacements?: string | Record<string, string>
   ): UNF extends true ? string | undefined : string;
-
+  
+  provider: I18nProvider;
   config: i18nFuncConfigPart & { undefinedNotFound?: UNF; locale?: L };
   defaultConfig: I18nProvider['config'];
 
@@ -125,6 +126,7 @@ export class I18nProvider {
       // @ts-expect-error They get added afterwards
       translator: Translator<UNF, L> = this.__.bind(this, translatorConfig);
 
+    translator.provider = this;
     translator.defaultConfig = this.config;
     translator.config = translatorConfig as StrictOmit<I18nProvider['config'], 'undefinedNotFound'> & { undefinedNotFound: UNF; locale: L };
 
