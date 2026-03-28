@@ -1,7 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unsafe-type-assertion */
 
-import type * as __ from '@mephisto5558/better-types'; /* eslint-disable-line import-x/order, import-x/no-namespace -- load in global definitions */
-
 import { randomInt } from 'node:crypto';
 import { readdir } from 'node:fs/promises';
 import path from 'node:path';
