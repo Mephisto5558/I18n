@@ -10,6 +10,9 @@ import type { Locale as APILocale } from 'discord-api-types/v10';
 type i18nFuncConfig = { locale?: Locale; errorNotFound?: boolean; undefinedNotFound?: boolean; backupPaths: string[] };
 type i18nFuncConfigPart = Partial<StrictOmit<i18nFuncConfig, 'undefinedNotFound' | 'locale'>>;
 
+type PrimitiveI18nReplacements = string | number | undefined;
+type i18nReplacements = PrimitiveI18nReplacements | Record<string, PrimitiveI18nReplacements>;
+
 export type Locale = Exclude<APILocale, `en${string}`> | 'en';
 type LocaleData = Record<string, string | string[]>;
 
@@ -18,14 +21,14 @@ export type Translator<
   L extends Locale | undefined = undefined
 > = {
   (
-    key: string, replacements?: string | Record<string, string>
+    key: string, replacements?: i18nReplacements
   ): UNF extends true ? string | undefined : string;
 
   provider: I18nProvider;
   config: i18nFuncConfigPart & { undefinedNotFound?: UNF; locale?: L };
   defaultConfig: I18nProvider['config'];
 
-  array__(key: string, replacements?: string | Record<string, string>
+  array__(key: string, replacements?: i18nReplacements
   ): string | string[];
 
   formatNumber<N extends number | bigint>(num: N): L extends undefined ? N : N | `${L}`;
@@ -150,7 +153,7 @@ export class I18nProvider {
       locale = this.config.defaultLocale, errorNotFound = this.config.errorNotFound,
       undefinedNotFound = this.config.undefinedNotFound, backupPaths = []
     }: i18nFuncConfigPart & { undefinedNotFound?: UNF; locale?: Locale } = {},
-    key: string, replacements?: string | Record<string, string>, returnArray?: ARRAY
+    key: string, replacements?: i18nReplacements, returnArray?: ARRAY
   ): RET {
     if (!key) throw new Error(`A key string must be provided! Got ${key}.`);
 
@@ -184,13 +187,13 @@ export class I18nProvider {
 
   /** @returns the message */
   __<UNF extends boolean | undefined = undefined>(
-    config: i18nFuncConfigPart & { undefinedNotFound?: UNF; locale?: Locale }, key: string, replacements?: string | Record<string, string>
+    config: i18nFuncConfigPart & { undefinedNotFound?: UNF; locale?: Locale }, key: string, replacements?: i18nReplacements
   ): UNF extends true ? string | undefined : string {
     return this.#__(config, key, replacements, false);
   }
 
   /** same as {@link I18nProvider.__ __} but returns the whole array instead of a random element from an array. */
-  array__(config: Partial<i18nFuncConfig>, key: string, replacements?: string | Record<string, string>): string | string[] {
+  array__(config: Partial<i18nFuncConfig>, key: string, replacements?: i18nReplacements): string | string[] {
     return this.#__(config, key, replacements, true);
   }
 
@@ -226,14 +229,13 @@ export class I18nProvider {
   }
 
 
-  static formatMessage(message: string, replacements?: string | Record<string, unknown>): string {
+  static formatMessage(message: string, replacements?: i18nReplacements): string {
     if (replacements == undefined || replacements == '') return message;
-    if (typeof replacements != 'object') return message.replaceAll(/\{\w+\}/g, replacements);
+    if (typeof replacements != 'object') return message.replaceAll(/\{\w+\}/g, replacements.toString());
 
     for (const [replacer, replacement] of Object.entries(replacements)) {
       if (!replacement?.toString()) continue;
 
-      /* eslint-disable-next-line @typescript-eslint/no-base-to-string -- up to the library user to not send an object. */
       message = message.replaceAll(`{${replacer}}`, replacement.toString());
     }
 
