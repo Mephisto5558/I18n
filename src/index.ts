@@ -10,7 +10,7 @@ import type { Locale as APILocale } from 'discord-api-types/v10';
 type i18nFuncConfig = { locale?: Locale; errorNotFound?: boolean; undefinedNotFound?: boolean; backupPaths: string[] };
 type i18nFuncConfigPart = Partial<StrictOmit<i18nFuncConfig, 'undefinedNotFound' | 'locale'>>;
 
-type PrimitiveI18nReplacements = string | number | undefined;
+type PrimitiveI18nReplacements = string | number | boolean | bigint | symbol | undefined;
 type i18nReplacements = PrimitiveI18nReplacements | Record<string, PrimitiveI18nReplacements>;
 
 export type Locale = Exclude<APILocale, `en${string}`> | 'en';
